@@ -1,5 +1,5 @@
 import { BaseEntity } from './base-entity';
-import { Column, Entity, ManyToMany } from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany } from "typeorm";
 import { ApiProperty } from '@nestjs/swagger';
 import { UserEntity } from "./user-entity";
 
@@ -10,6 +10,6 @@ export class RoleEntity extends BaseEntity {
   role: string
 
   @ApiProperty()
-  @ManyToMany(() => UserEntity, (user) => user.roles)
-  users: UserEntity[]
+  @ManyToMany(() => UserEntity, (user) => user.id)
+    users: UserEntity[]
 }

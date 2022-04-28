@@ -29,8 +29,9 @@ export class UserEntity extends BaseEntity {
   @Column()
   pass: string;
 
-  @ApiProperty({ type: () => [RoleEntity] })
-  @ManyToMany(() => RoleEntity, (role) => role.users)
+  @ApiProperty()
+  @ManyToMany(() => RoleEntity, (role) => role.id)
+  @JoinTable()
   roles: RoleEntity[]
 
   @ApiProperty()
@@ -39,5 +40,5 @@ export class UserEntity extends BaseEntity {
 
   @ApiProperty()
   @Column()
-  confirm_key: string;
+  confirmKey: string;
 }
