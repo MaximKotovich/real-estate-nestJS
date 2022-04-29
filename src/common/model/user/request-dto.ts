@@ -28,3 +28,12 @@ export class LoginUserDto {
   @ApiProperty()
   pass: string;
 }
+
+
+export class DeleteToleDto {
+  @ApiProperty()
+  userId: number
+
+  @ApiProperty()
+  roleName: string
+}

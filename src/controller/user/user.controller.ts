@@ -1,7 +1,7 @@
 import { ApiBadRequestResponse, ApiOperation, ApiResponse, ApiTags, ApiUnauthorizedResponse } from "@nestjs/swagger";
-import { Body, Controller, Get, Param, Post, Req, Request, Response, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Param, Patch, Post, Req, Request, Response, UseGuards } from "@nestjs/common";
 import { UserService } from "../../service/user/user.service";
-import { CreateUserDto, LoginUserDto } from "../../common/model/user/request-dto";
+import { CreateUserDto, DeleteToleDto, LoginUserDto } from "../../common/model/user/request-dto";
 import { AuthService } from "../../common/auth/auth.service";
 import { AuthenticatedGuard } from "../../common/auth/guards/authenticated.guard";
 import { RolesGuard } from "../../common/auth/guards/roles.guard";
@@ -42,8 +42,20 @@ export class UserController {
     response.end();
   }
 
-  @Roles("admin")
+  @ApiOperation({ summary: 'Delete role' })
+  @ApiResponse({ status: 201, description: 'Deleted role' })
+  @ApiResponse({ status: 403, description: 'Forbidden' })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+  @ApiBadRequestResponse({ description: 'Something wrong' })
+  @Patch('/remove-role')
   @UseGuards(AuthenticatedGuard, RolesGuard)
+  @Roles('admin')
+  async deleteRole (@Body() deleteToleDto: DeleteToleDto) {
+    return this.userService.deleteRole(deleteToleDto)
+  }
+
+  @UseGuards(AuthenticatedGuard, RolesGuard)
+  @Roles("admin")
   @Get("/get/:id")
   async getUser(@Param('id') id: number) {
     return await this.userService.getUser(id);

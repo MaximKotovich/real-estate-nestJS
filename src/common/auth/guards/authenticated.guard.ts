@@ -20,7 +20,7 @@ export class AuthenticatedGuard implements CanActivate {
     const response = context.switchToHttp().getResponse();
     try {
       const tokenPayload: any = request.cookies.jwt && this.jwtService.decode(request.cookies.jwt);
-      if (tokenPayload.exp * 1000 > Date.now()) {
+      if (tokenPayload && tokenPayload.exp * 1000 > Date.now()) {
         return !!tokenPayload;
       }
       const getRefreshToken = jwt.verify(request.cookies.refresh_token, this.configService.get("REFRESH_TOKEN_SECRET"));

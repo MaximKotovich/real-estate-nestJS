@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { CreateUserDto, LoginUserDto } from "../../common/model/user/request-dto";
+import { CreateUserDto, DeleteToleDto, LoginUserDto } from "../../common/model/user/request-dto";
 import { UserRepository } from "../../repository/user/user.repository";
 import { v4 } from "uuid";
 import { RoleRepository } from "../../repository/role/role.repository";
@@ -34,6 +34,16 @@ export class UserService {
       confirmKey: v4()
     };
     return await this.userRepository.save(newUser)
+  }
+
+  async deleteRole(deleteToleDto: DeleteToleDto){
+    // const user = await this.userRepository.findOne(deleteToleDto.userId , {relations:['roles']})
+    // user.roles = user.roles.filter((el) => el.role !== deleteToleDto.roleName)
+    const role = await this.roleRepository.findOne({ where: { role: deleteToleDto.roleName } });
+    await this.userRepository.removeRole(deleteToleDto.userId, role.id)
+    return 'success'
+    // return await this.userRepository.update(user.id,{roles: user.roles})
+
   }
   async getUser(id:number){
     return this.userRepository.findOne(id, {relations: ['roles']})

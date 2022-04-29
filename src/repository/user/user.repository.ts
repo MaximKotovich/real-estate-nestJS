@@ -8,14 +8,26 @@ export class UserRepository extends Repository<UserEntity> {
     return this
       .createQueryBuilder()
       .insert()
-      .into('user_roles_role')
+      .into("user_roles_role")
       .values([
         {
           userId: userId,
           roleId: roleId
         }
       ])
-      .execute()
-  }
+      .execute();
+  };
+
+
+  removeRole = (userId, roleId) => {
+    return this
+      .createQueryBuilder()
+      .delete()
+      .from("user_roles_role")
+      .where("userId = :userId AND roleId = :roleId",
+        { userId, roleId })
+      .execute();
+  };
+
 
 }
