@@ -26,11 +26,7 @@ export class RolesGuard implements CanActivate {
         return true
       }
       const req = context.switchToHttp().getRequest()
-      const jwtFrom = req.cookies.jwt
-
-      const user = this.jwtService.verify(jwtFrom)
-      req.user = user
-      return user.roles.some((role) => requiredRoles.includes(role))
+      return req.user.roles.some((role) => requiredRoles.includes(role.role))
     } catch (e) {
       throw new HttpException('User isn\'t log in', HttpStatus.UNAUTHORIZED)
     }

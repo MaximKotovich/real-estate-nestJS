@@ -2,12 +2,11 @@ import { ApiBadRequestResponse, ApiOperation, ApiResponse, ApiTags, ApiUnauthori
 import { Body, Controller, Get, Param, Post, Req, Request, Response, UseGuards } from "@nestjs/common";
 import { UserService } from "../../service/user/user.service";
 import { CreateUserDto, LoginUserDto } from "../../common/model/user/request-dto";
-import { LocalStrategy } from "../../common/auth/strategy/local.strategy";
 import { AuthService } from "../../common/auth/auth.service";
-import { JwtAuthGuard } from "../../common/auth/guards/jwt-auth.guard";
 import { AuthenticatedGuard } from "../../common/auth/guards/authenticated.guard";
 import { RolesGuard } from "../../common/auth/guards/roles.guard";
 import { Roles } from "../../common/decorators/roles-auth.decorator";
+import { LocalAuthGuard } from "../../common/auth/guards/locarl-auth.guard";
 
 @ApiTags("user")
 @Controller("user")
@@ -33,13 +32,14 @@ export class UserController {
   @ApiResponse({ status: 403, description: "Forbidden" })
   @ApiUnauthorizedResponse({ description: "Unauthorized" })
   @ApiBadRequestResponse({ description: "Something wrong" })
-  @UseGuards(LocalStrategy)
+  @UseGuards(LocalAuthGuard)
   @Post("/auth")
   async login(@Body() loginUserDto: LoginUserDto, @Response() response) {
     const token = await this.authService.login(loginUserDto);
-    // response.setHeader("Authorization", `Bearer ${token.access_token}`);
-    // response.cookie("jwt", token.access_token);
-    // response.end();
+    response.setHeader("Authorization", `Bearer ${token.access_token}`);
+    response.cookie("jwt", token.access_token);
+    response.cookie("refresh_token", token.refresh_token);
+    response.end();
   }
 
   @Roles("admin")
