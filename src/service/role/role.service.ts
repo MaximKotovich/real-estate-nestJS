@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { RoleRepository } from "../../repository/role/role.repository";
-import { addingRoleDto, CreateRoleDto } from "../../common/model/role/request-dto";
+import { AddingRoleDto, CreateRoleDto } from "../../common/model/role/request-dto";
 import { UserRepository } from "../../repository/user/user.repository";
 
 
@@ -17,7 +17,7 @@ export class RoleService {
   }
 
 
-  async addingRole(addingRole:addingRoleDto){
+  async addingRole(addingRole:AddingRoleDto){
     const role = await this.roleRepository.findOne({ where: { role: addingRole.role } })
 
    await this.userRepository.addingRole(addingRole.userId, role.id)

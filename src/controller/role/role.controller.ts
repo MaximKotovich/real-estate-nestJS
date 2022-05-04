@@ -1,6 +1,6 @@
 import { ApiBadRequestResponse, ApiOperation, ApiResponse, ApiTags, ApiUnauthorizedResponse } from "@nestjs/swagger";
 import { Body, Controller, Patch, Post, Put, UseGuards } from "@nestjs/common";
-import { addingRoleDto, CreateRoleDto } from "../../common/model/role/request-dto";
+import { AddingRoleDto, CreateRoleDto } from "../../common/model/role/request-dto";
 import { RoleService } from "../../service/role/role.service";
 import { AuthenticatedGuard } from "../../common/auth/guards/authenticated.guard";
 import { RolesGuard } from "../../common/auth/guards/roles.guard";
@@ -35,7 +35,7 @@ export class RoleController {
   @Patch('/adding')
   // @Roles('admin')
   @UseGuards(AuthenticatedGuard, RolesGuard)
-  async addingRole (@Body() addingRole: addingRoleDto) {
+  async addingRole (@Body() addingRole: AddingRoleDto) {
     return this.roleService.addingRole(addingRole)
   }
 }

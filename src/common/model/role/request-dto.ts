@@ -6,7 +6,7 @@ export class CreateRoleDto {
   role: string
 }
 
-export class addingRoleDto {
+export class AddingRoleDto {
   @ApiProperty()
   userId: number
 

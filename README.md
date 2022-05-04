@@ -12,3 +12,8 @@ $ ./node_modules/.bin/ts-node ./node_modules/.bin/typeorm migration:generate -n 
 $ ./node_modules/.bin/ts-node ./node_modules/.bin/typeorm migration:run
 ```
 
+### Migration revert
+revert last run migration
+```bash
+$ ./node_modules/.bin/ts-node ./node_modules/.bin/typeorm migration:revert
+```

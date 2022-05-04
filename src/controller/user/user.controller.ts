@@ -51,7 +51,7 @@ export class UserController {
   @UseGuards(AuthenticatedGuard, RolesGuard)
   @Roles('admin')
   async deleteRole (@Body() deleteToleDto: DeleteToleDto) {
-    return this.userService.deleteRole(deleteToleDto)
+    return await this.userService.deleteRole(deleteToleDto)
   }
 
   @UseGuards(AuthenticatedGuard, RolesGuard)

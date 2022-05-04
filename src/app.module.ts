@@ -1,29 +1,34 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { TypeOrmModule } from "@nestjs/typeorm";
 import { ENTITIES } from "./common/entity/entities";
-import { REPOSITORY } from "./repository/repository";
-import { SERVICES } from "./service/services";
-import { CONTROLLERS } from "./controller/controllers";
-import { PassportModule } from "@nestjs/passport";
-import { JwtModule } from "@nestjs/jwt";
-import { AuthModule } from './common/auth/auth.module';
-import { ConfigModule } from "@nestjs/config";
+import { ConfigModule, ConfigService } from "@nestjs/config";
 import { ControllerModule } from "./controller/controller.module";
-
+import * as path from "path";
+import { ServeStaticModule } from "@nestjs/serve-static";
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'postgres',
-      password: 'postgres',
-      database: 'postgres',
-      entities: [...ENTITIES],
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => {
+        return {
+          type: 'postgres',
+          host: configService.get('DATABASE_HOST'),
+          port: parseInt(configService.get('DATABASE_PORT'), 10),
+          username: configService.get('POSTGRES_USER'),
+          password: configService.get('POSTGRES_PASSWORD'),
+          database: configService.get('DATABASE_NAME'),
+          entities: [...ENTITIES],
+          synchronize: false,
+        };
+      }
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: path.resolve('src/common/images', 'permanent'),
     }),
     ConfigModule.forRoot({ isGlobal: true }),
-    ControllerModule
+    ControllerModule,
   ],
   controllers: [],
   providers: []

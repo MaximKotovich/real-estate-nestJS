@@ -37,12 +37,9 @@ export class UserService {
   }
 
   async deleteRole(deleteToleDto: DeleteToleDto){
-    // const user = await this.userRepository.findOne(deleteToleDto.userId , {relations:['roles']})
-    // user.roles = user.roles.filter((el) => el.role !== deleteToleDto.roleName)
     const role = await this.roleRepository.findOne({ where: { role: deleteToleDto.roleName } });
     await this.userRepository.removeRole(deleteToleDto.userId, role.id)
     return 'success'
-    // return await this.userRepository.update(user.id,{roles: user.roles})
 
   }
   async getUser(id:number){

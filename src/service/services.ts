@@ -4,8 +4,7 @@ import { RealEstateService } from "./real-estate/real-estate.service";
 import { RoleService } from "./role/role.service";
 import { TagsService } from "./tags/tags.service";
 import { UserService } from "./user/user.service";
-import { AuthService } from "../common/auth/auth.service";
-import { JwtService } from "@nestjs/jwt";
+import { ImagesService } from "./image/images.service";
 
 export const SERVICES = [
   BookingService,
@@ -13,5 +12,6 @@ export const SERVICES = [
   RealEstateService,
   RoleService,
   TagsService,
-  UserService
+  UserService,
+  ImagesService
 ]
