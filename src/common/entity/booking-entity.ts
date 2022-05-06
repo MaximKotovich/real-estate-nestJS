@@ -1,5 +1,5 @@
 import { BaseEntity } from './base-entity';
-import { Column, Entity, ManyToMany, ManyToOne } from "typeorm";
+import { Column, Entity, ManyToOne } from "typeorm";
 import { ApiProperty } from '@nestjs/swagger';
 import { UserEntity } from "./user-entity";
 import { RealEstateEntity } from "./real-estate-entity";

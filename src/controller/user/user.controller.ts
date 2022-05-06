@@ -54,8 +54,8 @@ export class UserController {
     return await this.userService.deleteRole(deleteToleDto)
   }
 
-  @UseGuards(AuthenticatedGuard, RolesGuard)
-  @Roles("admin")
+  @UseGuards(AuthenticatedGuard)
+  // @Roles("admin")
   @Get("/get/:id")
   async getUser(@Param('id') id: number) {
     return await this.userService.getUser(id);

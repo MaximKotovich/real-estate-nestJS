@@ -1,5 +1,5 @@
 import { BaseEntity } from './base-entity';
-import { Column, Entity, OneToOne, JoinColumn, ManyToOne, OneToMany } from "typeorm";
+import { Column, Entity, OneToOne, JoinColumn, ManyToOne, OneToMany, ManyToMany, JoinTable } from "typeorm";
 import { ApiProperty } from '@nestjs/swagger';
 import { UserEntity } from "./user-entity";
 import { TagsEntity } from "./tags-entity";
@@ -48,7 +48,8 @@ export class RealEstateEntity extends BaseEntity {
   mainImage: string;
 
   @ApiProperty({type: [TagsEntity]})
-  @OneToMany(() => TagsEntity, (tag) => tag.realEstate, {nullable: true})
+  @ManyToMany(() => TagsEntity, (tag) => tag.id)
+  @JoinTable()
   tags: TagsEntity[]
 
   @ApiProperty()

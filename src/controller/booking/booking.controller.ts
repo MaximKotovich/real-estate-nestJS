@@ -4,6 +4,5 @@ import { Controller } from "@nestjs/common";
 @ApiTags('booking')
 @Controller('booking')
 export class BookingController {
-  constructor() {
-  }
+  constructor() {}
 }

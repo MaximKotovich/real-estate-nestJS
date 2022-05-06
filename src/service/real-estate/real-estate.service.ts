@@ -1,5 +1,10 @@
 import { Injectable } from "@nestjs/common";
-import { NewEstateDto, SearchRealEstateDto, UpdateEstateDto } from "../../common/model/real-estate/request-dto";
+import {
+  AddTagToRealEstateDto,
+  NewEstateDto, RemoveTagFromEstateDto,
+  SearchRealEstateDto,
+  UpdateEstateDto
+} from "../../common/model/real-estate/request-dto";
 import { UserRepository } from "../../repository/user/user.repository";
 import { RealEstateRepository } from "../../repository/real-estate/real-estate.repository";
 import { AddressRepository } from "../../repository/location/address.repository";
@@ -8,6 +13,7 @@ import { ImagesService } from "../image/images.service";
 import * as fs from "fs";
 import * as path from "path";
 import { Cron, CronExpression } from "@nestjs/schedule";
+import { TagsRepository } from "../../repository/tags/tags.repository";
 
 
 @Injectable()
@@ -16,6 +22,7 @@ export class RealEstateService {
     private userRepository: UserRepository,
     private realEstateRepository: RealEstateRepository,
     private addressRepository: AddressRepository,
+    private tagsRepository:TagsRepository,
     private imagesService: ImagesService
   ) {
   }
@@ -113,6 +120,7 @@ export class RealEstateService {
       const query = this.realEstateRepository
         .createQueryBuilder('estate')
         .leftJoinAndSelect('estate.owner', 'owner')
+        .leftJoinAndSelect('estate.tags', 'tags')
         .leftJoinAndSelect('estate.address', 'address')
         .leftJoinAndSelect('address.town', 'town')
         .leftJoinAndSelect('town.country', 'country')
@@ -143,6 +151,18 @@ export class RealEstateService {
         query.andWhere('town = :town', {town: searchRealEstateDto[key]})
         return
       }
+      if (key === 'tag') {
+        const subQuery = this.realEstateRepository.createQueryBuilder()
+          .subQuery()
+          .select('estates.id', 'estateId')
+          .from('real_estate', 'estates')
+          .leftJoin('estates.tags', 'tags')
+          .where(`tags.id IN (${searchRealEstateDto[key]})`)
+          .getQuery()
+
+        query.andWhere('estate.id IN (' + subQuery + ')')
+        return
+      }
     })
 
     const searchResult = await query.getMany()
@@ -155,6 +175,7 @@ export class RealEstateService {
         type: el.type,
         area: el.area,
         images: el.images,
+        tags: el.tags,
         mainImage: el.mainImage,
         location: {
           address: el.address.address,
@@ -167,10 +188,25 @@ export class RealEstateService {
     return result
   }
 
+  async addTagForRealEstate(addTagToRealEstateDto: AddTagToRealEstateDto) {
+    const realEstate = await this.realEstateRepository.findOne(addTagToRealEstateDto.realEstateId, {relations: ['tags']})
+    const tag = await this.tagsRepository.findOne(addTagToRealEstateDto.tagId)
+    realEstate.tags = [...realEstate.tags, tag]
+    await this.realEstateRepository.save(realEstate)
+  }
+
+  async removeTagForRealEstate(removeTagFromEstateDto:RemoveTagFromEstateDto) {
+    const realEstate = await this.realEstateRepository.findOne(removeTagFromEstateDto.realEstateId, {relations: ['tags']})
+    const tag = await this.tagsRepository.findOne(removeTagFromEstateDto.tagId)
+    realEstate.tags = realEstate.tags.filter((el) => el.id !== tag.id)
+    await this.realEstateRepository.save(realEstate)
+  }
+
   async findOne(id: number): Promise<GetOneEstateResponseDto> {
     const query = await this.realEstateRepository.createQueryBuilder("estate")
       .where("estate.id = :estateId", { estateId: id })
       .leftJoinAndSelect("estate.address", "address")
+      .leftJoinAndSelect("estate.tags", "tags")
       .leftJoinAndSelect("address.town", "town")
       .leftJoinAndSelect("town.country", "country")
       .leftJoinAndSelect("estate.owner", "owner")
@@ -186,6 +222,7 @@ export class RealEstateService {
       area: query.area,
       images: query.images,
       mainImage: query.mainImage,
+      tags: query.tags,
       location: {
         address: query.address.address,
         town: query.address.town.town,

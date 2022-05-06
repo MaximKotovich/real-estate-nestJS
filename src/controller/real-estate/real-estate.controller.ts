@@ -3,7 +3,7 @@ import {
   Body,
   Controller,
   Get,
-  Param,
+  Param, ParseIntPipe,
   Patch,
   Post,
   Req,
@@ -12,7 +12,12 @@ import {
   UseInterceptors
 } from "@nestjs/common";
 import { AuthenticatedGuard } from "../../common/auth/guards/authenticated.guard";
-import { NewEstateDto, SearchRealEstateDto, UpdateEstateDto } from "../../common/model/real-estate/request-dto";
+import {
+  AddTagToRealEstateDto,
+  NewEstateDto, RemoveTagFromEstateDto,
+  SearchRealEstateDto,
+  UpdateEstateDto
+} from "../../common/model/real-estate/request-dto";
 import { RealEstateService } from "../../service/real-estate/real-estate.service";
 import { GetOneEstateResponseDto } from "../../common/model/real-estate/response-dto";
 import { FileInterceptor } from "@nestjs/platform-express";
@@ -62,8 +67,28 @@ export class RealEstateController {
   @ApiUnauthorizedResponse({ description: "Unauthorized" })
   @ApiBadRequestResponse({ description: "Something wrong" })
   @Get("/get/:id")
-  async getRealEstate(@Param() estateId): Promise<GetOneEstateResponseDto> {
-    return await this.realEstateService.findOne(estateId.id);
+  async getRealEstate(@Param('id',ParseIntPipe) estateId: number): Promise<GetOneEstateResponseDto> {
+    return await this.realEstateService.findOne(estateId);
+  }
+
+  @ApiOperation({ summary: "Add Tag to real-estate" })
+  @ApiResponse({ status: 201, description: "Success"})
+  @ApiResponse({ status: 403, description: "Forbidden" })
+  @ApiUnauthorizedResponse({ description: "Unauthorized" })
+  @ApiBadRequestResponse({ description: "Something wrong" })
+  @Post("/add-tag")
+  async addTagForRealEstate(@Body() addTagToRealEstateDto: AddTagToRealEstateDto) {
+    return await this.realEstateService.addTagForRealEstate(addTagToRealEstateDto);
+  }
+
+  @ApiOperation({ summary: "Remove Tag to real-estate" })
+  @ApiResponse({ status: 201, description: "Success"})
+  @ApiResponse({ status: 403, description: "Forbidden" })
+  @ApiUnauthorizedResponse({ description: "Unauthorized" })
+  @ApiBadRequestResponse({ description: "Something wrong" })
+  @Post("/remove-tag")
+  async removeTagForRealEstate(@Body() removeTagFromEstateDto: RemoveTagFromEstateDto) {
+    return await this.realEstateService.removeTagForRealEstate(removeTagFromEstateDto);
   }
 
   @ApiOperation({ summary: 'uploadFile' })

@@ -74,5 +74,18 @@ export class SearchRealEstateDto {
   @ApiProperty()
   town?: string;
 
+  @ApiProperty()
+  tag?: number[];
+}
+
+export class AddTagToRealEstateDto{
+  @ApiProperty()
+  tagId: number;
+
+  @ApiProperty()
+  realEstateId: number;
+}
+
+export class RemoveTagFromEstateDto extends AddTagToRealEstateDto{
 }
 
