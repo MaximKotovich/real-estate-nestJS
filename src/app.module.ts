@@ -5,9 +5,11 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
 import { ControllerModule } from "./controller/controller.module";
 import * as path from "path";
 import { ServeStaticModule } from "@nestjs/serve-static";
+import { ScheduleModule } from "@nestjs/schedule";
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],

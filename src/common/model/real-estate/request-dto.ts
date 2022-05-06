@@ -10,7 +10,7 @@ export class NewEstateDto {
   description: string;
 
   @ApiProperty()
-  coast: string;
+  coast: number;
 
   @ApiProperty()
   area: number;
@@ -22,16 +22,10 @@ export class NewEstateDto {
   address: string;
 
   @ApiProperty()
-  country: string;
+  images?: string[];
 
   @ApiProperty()
-  town: string;
-
-  @ApiProperty()
-  images: string[];
-
-  @ApiProperty()
-  mainImage: string;
+  mainImage?: string;
 }
 
 export class UpdateEstateDto extends WithIdModel{
@@ -42,13 +36,43 @@ export class UpdateEstateDto extends WithIdModel{
   description?: string;
 
   @ApiProperty()
-  coast?: string;
+  coast?: number
 
   @ApiProperty()
   area?: number;
 
   @ApiProperty()
   type?: string;
+
+  @ApiProperty()
+  address?: string | {id: number};
+
+  @ApiProperty()
+  images?: string[];
+
+  @ApiProperty()
+  mainImage?: string;
+}
+
+export class SearchRealEstateDto {
+
+  @ApiProperty()
+  startCoast?: number;
+
+  @ApiProperty()
+  endCoast?: number;
+
+  @ApiProperty()
+  type?: string;
+
+  @ApiProperty()
+  address?: string;
+
+  @ApiProperty()
+  country?: string;
+
+  @ApiProperty()
+  town?: string;
 
 }
 

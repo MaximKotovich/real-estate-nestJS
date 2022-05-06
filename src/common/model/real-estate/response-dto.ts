@@ -22,7 +22,7 @@ export class GetOneEstateResponseDto extends WithIdModel{
   description: string
 
   @ApiProperty()
-  coast: string
+  coast: number
 
   @ApiProperty()
   type: string

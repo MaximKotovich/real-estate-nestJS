@@ -17,7 +17,7 @@ export class RealEstateEntity extends BaseEntity {
 
   @ApiProperty()
   @Column()
-  coast: string;
+  coast: number;
 
   @ApiProperty()
   @Column()
