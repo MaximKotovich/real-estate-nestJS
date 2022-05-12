@@ -54,6 +54,16 @@ export class UserController {
     return await this.userService.deleteRole(deleteToleDto)
   }
 
+  @ApiOperation({ summary: 'Confirm email' })
+  @ApiResponse({ status: 201, description: 'Confirmed' })
+  @ApiResponse({ status: 403, description: 'Forbidden' })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+  @ApiBadRequestResponse({ description: 'Something wrong' })
+  @Get('/confirm/:token')
+  async confirmEmail (@Param('token') token: string) {
+    return await this.userService.confirmEmail(token)
+  }
+
   @UseGuards(AuthenticatedGuard)
   // @Roles("admin")
   @Get("/get/:id")

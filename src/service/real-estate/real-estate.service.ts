@@ -119,6 +119,8 @@ export class RealEstateService {
   async advancedSearch ( searchRealEstateDto: SearchRealEstateDto) {
       const query = this.realEstateRepository
         .createQueryBuilder('estate')
+        .leftJoinAndSelect('booking', 'bookings', 'bookings.realEstateId = estate.id')
+        .leftJoinAndSelect('bookings.user', 'bookingUser')
         .leftJoinAndSelect('estate.owner', 'owner')
         .leftJoinAndSelect('estate.tags', 'tags')
         .leftJoinAndSelect('estate.address', 'address')
@@ -165,27 +167,29 @@ export class RealEstateService {
       }
     })
 
-    const searchResult = await query.getMany()
-    const result = searchResult.map((el) => {
-      return {
-        id: el.id,
-        name: el.name,
-        description: el.description,
-        coast: el.coast,
-        type: el.type,
-        area: el.area,
-        images: el.images,
-        tags: el.tags,
-        mainImage: el.mainImage,
-        location: {
-          address: el.address.address,
-          town: el.address.town.town,
-          country: el.address.town.country.country
-        },
-        owner: el.owner
-      }
-    })
-    return result
+    console.log(query.getSql())
+
+    // const searchResult = await query.getMany()
+    // const result = searchResult.map((el) => {
+    //   return {
+    //     id: el.id,
+    //     name: el.name,
+    //     description: el.description,
+    //     coast: el.coast,
+    //     type: el.type,
+    //     area: el.area,
+    //     images: el.images,
+    //     tags: el.tags,
+    //     mainImage: el.mainImage,
+    //     location: {
+    //       address: el.address.address,
+    //       town: el.address.town.town,
+    //       country: el.address.town.country.country
+    //     },
+    //     owner: el.owner
+    //   }
+    // })
+    // return result
   }
 
   async addTagForRealEstate(addTagToRealEstateDto: AddTagToRealEstateDto) {
